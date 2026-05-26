@@ -10,7 +10,7 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
-    private uploadService: UploadService, // Inject UploadService để upload ảnh
+    private uploadService: UploadService,
   ) {}
 
   async findAllWithPagination(
@@ -23,9 +23,12 @@ export class ProductsService {
   ) {
     const query = this.productsRepository.createQueryBuilder('product');
 
+    // Tìm kiếm theo tên
     if (search) {
       query.andWhere('product.name ILIKE :search', { search: `%${search}%` });
     }
+
+    // Lọc theo giá
     if (minPrice !== undefined) {
       query.andWhere('product.price >= :minPrice', { minPrice });
     }
@@ -33,27 +36,35 @@ export class ProductsService {
       query.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
+    // Sắp xếp – đã sửa lỗi so sánh chữ hoa/thường
     if (sort) {
       const [field, order] = sort.split('_');
       const validFields = ['name', 'price'];
-      if (validFields.includes(field) && (order === 'asc' || order === 'desc')) {
-        query.orderBy(`product.${field}`, order.toUpperCase() as 'ASC' | 'DESC');
+      // Chuyển order về chữ hoa để kiểm tra (frontend gửi 'ASC' hoặc 'DESC')
+      const orderUpper = order.toUpperCase();
+      if (validFields.includes(field) && (orderUpper === 'ASC' || orderUpper === 'DESC')) {
+        query.orderBy(`product.${field}`, orderUpper as 'ASC' | 'DESC');
       } else {
-        query.orderBy('product.id', 'ASC');
+        query.orderBy('product.id', 'ASC'); // fallback
       }
     } else {
       query.orderBy('product.id', 'ASC');
     }
 
+    // Phân trang
     const [data, total] = await query
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
 
-    return { data, total, page, totalPages: Math.ceil(total / limit) };
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 
-  // Thêm method findOne
   async findOne(id: number): Promise<Product> {
     const product = await this.productsRepository.findOne({ where: { id } });
     if (!product) {
@@ -67,7 +78,6 @@ export class ProductsService {
     return await this.productsRepository.save(newProduct);
   }
 
-  // Sửa update nhận Partial<CreateProductDto> thay vì CreateProductDto
   async update(id: number, updateProductDto: Partial<CreateProductDto>): Promise<Product> {
     const product = await this.findOne(id);
     Object.assign(product, updateProductDto);
@@ -81,7 +91,6 @@ export class ProductsService {
     }
   }
 
-  // Sửa updateImage nhận file (Express.Multer.File) thay vì string
   async updateImage(id: number, file: Express.Multer.File): Promise<Product> {
     if (!file) {
       throw new BadRequestException('No file uploaded');

@@ -8,12 +8,9 @@ export class Product {
   @Column()
   name: string;
 
-  @Column('text')
-  description: string;
-
   @Column('decimal', { precision: 10, scale: 2 })
   price: number;
 
-  @Column({ default: true })
-  isActive: boolean;
+  @Column({ nullable: true })
+  description: string;
 }

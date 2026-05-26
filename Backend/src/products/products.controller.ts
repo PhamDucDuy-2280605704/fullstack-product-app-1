@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, HttpStatus, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 
@@ -7,26 +7,33 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @Get()
-  findAll(
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  async findAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 5,
+    @Query('search') search?: string,
+    @Query('minPrice') minPrice?: number,
+    @Query('maxPrice') maxPrice?: number,
+    @Query('sort') sort?: string,
   ) {
-    return this.productsService.findAll(page, limit);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productsService.findOne(+id);
+    return this.productsService.findAllWithPagination(
+      +page,
+      +limit,
+      search,
+      minPrice !== undefined ? +minPrice : undefined,
+      maxPrice !== undefined ? +maxPrice : undefined,
+      sort,
+    );
   }
 
   @Post()
-  create(@Body() dto: CreateProductDto) {
-    return this.productsService.create(dto);
+  @HttpCode(HttpStatus.CREATED)
+  create(@Body() createProductDto: CreateProductDto) {
+    return this.productsService.create(createProductDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: Partial<CreateProductDto>) {
-    return this.productsService.update(+id, dto);
+  update(@Param('id') id: string, @Body() updateProductDto: CreateProductDto) {
+    return this.productsService.update(+id, updateProductDto);
   }
 
   @Delete(':id')

@@ -106,3 +106,53 @@ button:hover {
   background-color: #ccc;
   cursor: not-allowed;
 }
+/* Giữ nguyên các style cũ, sau đó thêm: */
+.filters {
+  background: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.filter-input.small {
+  flex: 0.5;
+  min-width: 100px;
+}
+
+.filter-select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+}
+
+.price-filters {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+}
+
+.description {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+}
+
+.total-info {
+  text-align: center;
+  margin-top: 15px;
+  font-size: 0.9em;
+  color: #555;
+}

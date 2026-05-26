@@ -71,4 +71,11 @@ export class ProductsService {
       throw new NotFoundException(`Product with ID ${id} not found`);
     }
   }
+
+  async updateImage(id: number, imageUrl: string): Promise<Product> {
+    const product = await this.productsRepository.findOne({ where: { id } });
+    if (!product) throw new NotFoundException('Product not found');
+    product.imageUrl = imageUrl;
+    return this.productsRepository.save(product);
+  }
 }

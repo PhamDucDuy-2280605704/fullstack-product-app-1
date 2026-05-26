@@ -17,6 +17,7 @@ function App() {
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
   const [sort, setSort] = useState('');
+  const [uploading, setUploading] = useState({});
 
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
@@ -63,12 +64,27 @@ function App() {
       toast.error('Vui lòng nhập tên và giá');
       return;
     }
+    // Chuyển price sang số và kiểm tra
+    const priceNum = parseFloat(form.price);
+    if (isNaN(priceNum)) {
+      toast.error('Giá phải là số');
+      return;
+    }
+    if (priceNum < 0) {
+      toast.error('Giá không được nhỏ hơn 0');
+      return;
+    }
+    const submitData = {
+      name: form.name,
+      price: priceNum,
+      description: form.description || '',
+    };
     try {
       if (editing) {
-        await axios.put(`${API_URL}/${editing}`, form);
+        await axios.put(`${API_URL}/${editing}`, submitData);
         toast.success('Cập nhật thành công');
       } else {
-        await axios.post(API_URL, form);
+        await axios.post(API_URL, submitData);
         toast.success('Thêm sản phẩm thành công');
       }
       resetForm();
@@ -114,6 +130,39 @@ function App() {
   const resetForm = () => {
     setEditing(null);
     setForm({ name: '', price: '', description: '' });
+  };
+
+  const handleFileChange = (productId, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(prev => ({ ...prev, [productId]: { file, uploading: false } }));
+  };
+
+  const handleUpload = async (productId) => {
+    const fileObj = uploading[productId];
+    if (!fileObj || !fileObj.file) {
+      toast.error('Vui lòng chọn file ảnh');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', fileObj.file);
+    setUploading(prev => ({ ...prev, [productId]: { ...prev[productId], uploading: true } }));
+    try {
+      await axios.post(`${API_URL}/upload/${productId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      toast.success('Upload ảnh thành công');
+      fetchProducts();
+      setUploading(prev => {
+        const newState = { ...prev };
+        delete newState[productId];
+        return newState;
+      });
+    } catch (error) {
+      toast.error('Upload ảnh thất bại');
+    } finally {
+      setUploading(prev => ({ ...prev, [productId]: { ...prev[productId], uploading: false } }));
+    }
   };
 
   return (
@@ -186,13 +235,33 @@ function App() {
       <ul className="product-list">
         {products.map((product) => (
           <li key={product.id} className="product-item">
-            <div>
-              <strong>{product.name}</strong> - {Number(product.price).toLocaleString()} VND
-              {product.description && <div className="description">{product.description}</div>}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {product.imageUrl && (
+                <img src={product.imageUrl} alt={product.name} style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px' }} />
+              )}
+              <div>
+                <strong>{product.name}</strong> - {Number(product.price).toLocaleString()} VND
+                {product.description && <div className="description">{product.description}</div>}
+              </div>
             </div>
             <div className="product-actions">
               <button onClick={() => handleEdit(product)}>Sửa</button>
               <button onClick={() => handleDelete(product.id)}>Xóa</button>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileChange(product.id, e)}
+                  style={{ fontSize: '0.8rem' }}
+                />
+                <button
+                  onClick={() => handleUpload(product.id)}
+                  disabled={uploading[product.id]?.uploading}
+                  style={{ fontSize: '0.8rem', padding: '4px 8px' }}
+                >
+                  {uploading[product.id]?.uploading ? 'Đang upload...' : 'Upload ảnh'}
+                </button>
+              </div>
             </div>
           </li>
         ))}

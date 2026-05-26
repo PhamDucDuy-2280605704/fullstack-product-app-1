@@ -11,8 +11,14 @@ export class ProductsService {
     private productRepo: Repository<Product>,
   ) {}
 
-  findAll(): Promise<Product[]> {
-    return this.productRepo.find();
+  async findAll(page: number = 1, limit: number = 10): Promise<{ data: Product[]; total: number; page: number; lastPage: number }> {
+    const [data, total] = await this.productRepo.findAndCount({
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { id: 'ASC' },
+    });
+    const lastPage = Math.ceil(total / limit);
+    return { data, total, page, lastPage };
   }
 
   async findOne(id: number): Promise<Product> {

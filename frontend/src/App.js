@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast, { Toaster } from 'react-hot-toast';
 import './App.css';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
+const API_URL = 'http://localhost:3000/products';
 
 function App() {
   const [products, setProducts] = useState([]);
@@ -13,6 +12,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
   const limit = 5;
 
   useEffect(() => {
@@ -22,9 +22,11 @@ function App() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`${API_URL}/products?page=${page}&limit=${limit}`);
+      const res = await axios.get(`${API_URL}?page=${page}&limit=${limit}`);
       setProducts(res.data.data);
-      setTotalPages(res.data.lastPage);
+      setTotal(res.data.total);
+      setTotalPages(res.data.totalPages);
+      toast.success('Tải dữ liệu thành công');
     } catch (err) {
       toast.error('Không thể kết nối đến server');
     } finally {
@@ -35,20 +37,20 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.name || !form.price) {
-      toast.warn('Vui lòng nhập tên và giá');
+      toast.error('Vui lòng nhập tên và giá');
       return;
     }
     try {
       if (editing !== null) {
-        await axios.put(`${API_URL}/products/${editing}`, {
+        await axios.put(`${API_URL}/${editing}`, {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
         });
-        toast.success('Cập nhật thành công');
+        toast.success('Cập nhật sản phẩm thành công');
         setEditing(null);
       } else {
-        await axios.post(`${API_URL}/products`, {
+        await axios.post(API_URL, {
           name: form.name,
           description: form.description,
           price: parseFloat(form.price),
@@ -56,6 +58,7 @@ function App() {
         toast.success('Thêm sản phẩm thành công');
       }
       setForm({ name: '', description: '', price: '' });
+      setPage(1);
       fetchProducts();
     } catch (err) {
       toast.error('Lỗi khi lưu sản phẩm');
@@ -65,8 +68,8 @@ function App() {
   const handleDelete = async (id) => {
     if (window.confirm('Bạn có chắc muốn xóa?')) {
       try {
-        await axios.delete(`${API_URL}/products/${id}`);
-        toast.success('Xóa thành công');
+        await axios.delete(`${API_URL}/${id}`);
+        toast.success('Xóa sản phẩm thành công');
         fetchProducts();
       } catch (err) {
         toast.error('Xóa thất bại');
@@ -81,6 +84,7 @@ function App() {
       description: product.description,
       price: product.price,
     });
+    toast('Đang chỉnh sửa sản phẩm', { icon: '✏️' });
   };
 
   const handleCancelEdit = () => {
@@ -88,9 +92,17 @@ function App() {
     setForm({ name: '', description: '', price: '' });
   };
 
+  const goToPreviousPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const goToNextPage = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+
   return (
     <div className="container">
-      <ToastContainer position="top-right" autoClose={3000} />
+      <Toaster position="top-right" reverseOrder={false} />
       <h1>📦 Quản lý sản phẩm</h1>
       <form onSubmit={handleSubmit} className="product-form">
         <input
@@ -135,15 +147,13 @@ function App() {
           </li>
         ))}
       </ul>
-
       {!loading && products.length === 0 && <p>Chưa có sản phẩm nào. Hãy thêm sản phẩm đầu tiên!</p>}
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage(p => p - 1)}>« Trước</button>
-          <span>Trang {page} / {totalPages}</span>
-          <button disabled={page === totalPages} onClick={() => setPage(p => p + 1)}>Sau »</button>
+          <button onClick={goToPreviousPage} disabled={page === 1}>◀ Trước</button>
+          <span> Trang {page} / {totalPages} (Tổng {total} sản phẩm) </span>
+          <button onClick={goToNextPage} disabled={page === totalPages}>Sau ▶</button>
         </div>
       )}
     </div>

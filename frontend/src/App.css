@@ -88,21 +88,20 @@ button:hover {
   border-radius: 4px;
   margin-bottom: 10px;
 }
+
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 10px;
   margin-top: 20px;
   align-items: center;
 }
+
 .pagination button {
   background-color: #b8860b;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: 5px 15px;
 }
+
 .pagination button:disabled {
   background-color: #ccc;
   cursor: not-allowed;

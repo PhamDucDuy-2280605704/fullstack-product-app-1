@@ -1,59 +1,56 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, Query, HttpCode, HttpStatus, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
-import { UploadService } from '../upload/upload.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('products')
 export class ProductsController {
-  constructor(
-    private readonly productsService: ProductsService,
-    private readonly uploadService: UploadService,
-  ) {}
+  constructor(private readonly productsService: ProductsService) {}
 
+  // Các route công khai: GET (xem danh sách & chi tiết)
   @Get()
   async findAll(
     @Query('page') page = 1,
-    @Query('limit') limit = 5,
-    @Query('search') search?: string,
+    @Query('limit') limit = 10,
+    @Query('search') search = '',
     @Query('minPrice') minPrice?: number,
     @Query('maxPrice') maxPrice?: number,
     @Query('sort') sort?: string,
   ) {
     return this.productsService.findAllWithPagination(
-      +page,
-      +limit,
-      search,
-      minPrice !== undefined ? +minPrice : undefined,
-      maxPrice !== undefined ? +maxPrice : undefined,
-      sort,
+      +page, +limit, search, minPrice, maxPrice, sort
     );
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.productsService.findOne(+id);
+  }
+
+  // Các route yêu cầu đăng nhập:
   @Post()
-  @HttpCode(HttpStatus.CREATED)
-  create(@Body() createProductDto: CreateProductDto) {
+  @UseGuards(AuthGuard('jwt'))
+  async create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: CreateProductDto) {
-    return this.productsService.update(+id, updateProductDto);
+  @UseGuards(AuthGuard('jwt'))
+  async update(@Param('id') id: string, @Body() updateData: Partial<CreateProductDto>) {
+    return this.productsService.update(+id, updateData);
   }
 
   @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
+  @UseGuards(AuthGuard('jwt'))
+  async remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
   }
 
   @Post('upload/:id')
-  @UseInterceptors(FileInterceptor('image'))
-  async uploadProductImage(
-    @Param('id') id: string,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    const imageUrl = await this.uploadService.uploadImage(file);
-    return this.productsService.updateImage(+id, imageUrl);
+  @UseGuards(AuthGuard('jwt'))
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadImage(@Param('id') id: string, @UploadedFile() file: Express.Multer.File) {
+    return this.productsService.updateImage(+id, file);
   }
 }

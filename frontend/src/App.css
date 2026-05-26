@@ -1,158 +1,69 @@
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-  background-color: #fef7e8;
-  min-height: 100vh;
-}
-
-h1 {
-  color: #b8860b;
+/* ===== App.css – Dùng cho Login, Register ===== */
+.auth-container {
+  max-width: 450px;
+  margin: 80px auto;
+  background: #ffffffea;
+  border-radius: 32px;
+  padding: 2rem;
+  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(230, 210, 170, 0.5);
   text-align: center;
 }
 
-.product-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 20px;
+.auth-container h2 {
+  color: #b8860b;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.auth-container input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  margin: 0.8rem 0;
+  border: 1px solid #e4b363;
+  border-radius: 60px;
+  font-size: 1rem;
   background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  transition: 0.2s;
 }
 
-.product-form input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
+.auth-container input:focus {
+  outline: none;
+  border-color: #b8860b;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
 }
 
-.form-buttons {
-  display: flex;
-  gap: 10px;
-}
-
-button {
+.auth-container button {
+  width: 100%;
   background-color: #b8860b;
   color: white;
   border: none;
-  padding: 10px 15px;
-  border-radius: 4px;
+  padding: 0.8rem;
+  border-radius: 60px;
+  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
 }
 
-button:hover {
-  background-color: #e4b363;
+.auth-container button:hover {
+  background-color: #9a7209;
+  transform: translateY(-2px);
 }
 
-.product-list {
-  list-style: none;
-  padding: 0;
+.auth-container p {
+  margin-top: 1.2rem;
+  color: #5a4a2e;
 }
 
-.product-item {
-  background: white;
-  margin-bottom: 10px;
-  padding: 15px;
-  border-radius: 8px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+.auth-container a {
+  color: #b8860b;
+  text-decoration: none;
+  font-weight: 500;
 }
 
-.product-info strong {
-  font-size: 1.1em;
-  color: #333;
-}
-
-.product-info p {
-  margin: 5px 0 0;
-  color: #666;
-  font-size: 0.9em;
-}
-
-.product-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.error {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 10px;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-  align-items: center;
-}
-
-.pagination button {
-  background-color: #b8860b;
-  padding: 5px 15px;
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-/* Giữ nguyên các style cũ, sau đó thêm: */
-.filters {
-  background: white;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  align-items: center;
-}
-
-.filter-input {
-  flex: 1;
-  min-width: 150px;
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-}
-
-.filter-input.small {
-  flex: 0.5;
-  min-width: 100px;
-}
-
-.filter-select {
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background: white;
-}
-
-.price-filters {
-  display: flex;
-  gap: 8px;
-  flex: 1;
-}
-
-.description {
-  font-size: 0.9em;
-  color: #666;
-  margin-top: 5px;
-}
-
-.total-info {
-  text-align: center;
-  margin-top: 15px;
-  font-size: 0.9em;
-  color: #555;
+.auth-container a:hover {
+  text-decoration: underline;
 }

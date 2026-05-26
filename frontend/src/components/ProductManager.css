@@ -1,0 +1,217 @@
+/* ===== ProductManager.css – Theme Vàng Nâu ===== */
+.pageWrapper {
+  background-color: #fef7e8;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffffea;
+  border-radius: 32px;
+  padding: 2rem;
+  box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(230, 210, 170, 0.5);
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #f5e2c1;
+}
+
+.header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #3a3222;
+  margin: 0;
+}
+
+.header button {
+  background-color: #b8860b;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.header button:hover {
+  background-color: #9a7209;
+  transform: translateY(-2px);
+}
+
+/* Form thêm/sửa */
+.form {
+  background: #fffef7;
+  border-radius: 24px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border: 1px solid #f0e3ce;
+}
+
+.form input,
+.form textarea {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.7rem 1rem;
+  border: 1px solid #e4b363;
+  border-radius: 60px;
+  font-size: 0.95rem;
+  background: white;
+  transition: 0.2s;
+}
+
+.form input:focus,
+.form textarea:focus {
+  outline: none;
+  border-color: #b8860b;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.2);
+}
+
+.form textarea {
+  border-radius: 20px;
+  resize: vertical;
+}
+
+.form button {
+  background-color: #b8860b;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 60px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.form button:hover {
+  background-color: #9a7209;
+  transform: translateY(-2px);
+}
+
+/* Bộ lọc */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 2rem;
+  background: #fef7e8;
+  padding: 1rem;
+  border-radius: 60px;
+}
+
+.filters input,
+.filters select {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border: 1px solid #e4b363;
+  border-radius: 60px;
+  background: white;
+  font-size: 0.9rem;
+}
+
+/* Card sản phẩm */
+.productCard {
+  background: white;
+  border-radius: 24px;
+  padding: 1.2rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid #f0e3ce;
+  transition: all 0.2s;
+  overflow: auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+}
+
+.productCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px -8px rgba(184, 134, 11, 0.2);
+  border-color: #e4b363;
+}
+
+.productCard img {
+  float: left;
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-right: 1rem;
+  border: 2px solid #f5e2c1;
+}
+
+.productCard h3 {
+  margin: 0 0 0.3rem 0;
+  color: #b8860b;
+  font-size: 1.25rem;
+}
+
+.productCard p {
+  margin: 0.2rem 0;
+  color: #5a4a2e;
+}
+
+.productCard button {
+  background-color: #b8860b;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 60px;
+  color: white;
+  cursor: pointer;
+  margin-right: 0.5rem;
+  font-size: 0.85rem;
+  transition: 0.2s;
+}
+
+.productCard button:last-of-type {
+  background-color: #c23b22;
+}
+
+.productCard button:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Upload file */
+.productCard input[type="file"] {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+  align-items: center;
+}
+
+.pagination button {
+  background-color: #b8860b;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 60px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.pagination button:disabled {
+  background-color: #d9c49c;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  color: #5a4a2e;
+  font-weight: 500;
+}

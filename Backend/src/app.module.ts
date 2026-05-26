@@ -2,8 +2,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProductsModule } from './products/products.module';
-import { Product } from './products/products.entity';
 import { UploadModule } from './upload/upload.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { User } from './users/user.entity';
+import { Product } from './products/products.entity';
 
 @Module({
   imports: [
@@ -17,13 +20,15 @@ import { UploadModule } from './upload/upload.module';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Product],
-        synchronize: true, // chỉ dùng dev
+        entities: [Product, User],    // thêm User
+        synchronize: true,             // chỉ dùng dev
       }),
       inject: [ConfigService],
     }),
     ProductsModule,
     UploadModule,
+    AuthModule,
+    UsersModule,
   ],
 })
 export class AppModule {}
